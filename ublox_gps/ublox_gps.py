@@ -217,6 +217,21 @@ class UbloxGps(object):
         s_payload = self.scale_NAV_HPPOSLLH(payload)
         return s_payload
 
+    def hpecef_geo_coords(self):
+        """
+        Sends a poll request for the NAV class with the HPPOSLLH Message ID and
+        parses ublox messages for the response. The payload is extracted from
+        the response which is then passed to the user.
+
+        :return: The payload of the NAV Class and HPPOSLLH Message ID
+        :rtype: namedtuple
+        """
+        self.send_message(sp.NAV_CLS, self.nav_ms.get('HPPOSECEF'))
+        parse_tool = core.Parser([sp.NAV_CLS])
+        cls_name, msg_name, payload = parse_tool.receive_from(self.hard_port)
+        s_payload = self.scale_NAV_HPPOSECEF(payload)
+        return s_payload    
+    
     def date_time(self):
         """
         Sends a poll request for the NAV class with the PVT Message ID and
